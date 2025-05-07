@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Anime</title>
+  <style>
+    body { background:#121212; color:#fff; padding:2em; font-family:sans-serif; }
+    input, textarea, select, button {
+      display:block; width:100%; margin:10px 0; padding:10px; border-radius:5px;
+      background:#1e1e1e; color:#fff; border:1px solid #333;
+    }
+  </style>
+</head>
+<body>
+  <h2>Form Upload Anime</h2>
+  <form id="upload-form">
+    <input type="text" id="judul" placeholder="Judul Anime" required>
+    <input type="text" id="embed" placeholder="Embed Link" required>
+    <input type="text" id="download" placeholder="Download Link">
+    <textarea id="deskripsi" placeholder="Deskripsi Anime" required></textarea>
+    <select id="genre" multiple>
+      <option>Action</option><option>Comedy</option><option>Romance</option>
+    </select>
+    <button type="submit">Upload</button>
+  </form>
+  <div id="status"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6YeMuko7lzV-nmfhCNQudvnbywZOQNAU",
+      authDomain: "aniverse-f4b85.firebaseapp.com",
+      projectId: "aniverse-f4b85"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    document.getElementById("upload-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const data = {
+        title: document.getElementById("judul").value,
+        embed: document.getElementById("embed").value,
+        download: document.getElementById("download").value,
+        deskripsi: document.getElementById("deskripsi").value,
+        genre: Array.from(document.getElementById("genre").selectedOptions).map(o => o.value).join(", ")
+      };
+      db.collection("anime").add(data).then(() => {
+        document.getElementById("status").innerText = "Berhasil upload!";
+      }).catch(err => {
+        document.getElementById("status").innerText = "Gagal: " + err.message;
+      });
+    });
+  </script>
+</body>
+</html>
